@@ -5,5 +5,19 @@
                 <to uri="direct:api"/>
             </get>
         </rest>
+        <rest>
+            <get uri="/api/obj1">
+                <to uri="direct:obj1"/>
+            </get>
+        </rest>
+        <rest>
+            <get uri="/api/obj2">
+                <to uri="direct:obj2"/>
+            </get>
+        </rest>
+        <rest>
+            <get uri="/api/obj3">
+                <to uri="direct:obj3"/>
+            </get>
+        </rest>
 </rests>
-

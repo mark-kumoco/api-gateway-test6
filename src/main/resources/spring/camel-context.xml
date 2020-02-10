@@ -3,9 +3,21 @@
     xmlns:camel="http://camel.apache.org/schema/spring"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
     <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
-        <route id="simple-route">
-            <from id="route-timer" uri="direct:api"/>
+        <route id="api-route1">
+            <from id="_route1" uri="direct:api"/>
             <to id="_to1" uri="http://localhost:8081/?bridgeEndpoint=true"/>
+        </route>
+        <route id="api-route2">
+            <from id="_route2" uri="direct:obj1"/>
+            <to id="_to2" uri="http://localhost:8081/obj1/index.html?bridgeEndpoint=true"/>
+        </route>
+        <route id="api-route3">
+            <from id="_route3" uri="direct:obj2"/>
+            <to id="_to3" uri="http://localhost:8081/obj2/index.html?bridgeEndpoint=true"/>
+        </route>
+        <route id="api-route4">
+            <from id="_route4" uri="direct:obj3"/>
+            <to id="_to4" uri="http://localhost:8081/obj3/index.html?bridgeEndpoint=true"/>
         </route>
     </camelContext>
 </beans>
