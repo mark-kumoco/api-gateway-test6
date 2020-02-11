@@ -1,0 +1,20 @@
+[{ 
+	"house-name":"Sunny Hill",
+	"address-line-1":"15 Robertson Drive",
+	"post-code":"TD9 8GH"
+},
+{ 
+	"house-name":"Snowy Valley",
+	"address-line-1":"66 Hithere Road",
+	"post-code":"UB3 8UH"
+},
+{ 
+	"house-name":null,
+	"address-line-1":"1a Peartree Avenue",
+	"post-code":"TY42 0FB"
+},
+{ 
+	"house-name":null,
+	"address-line-1":"248 The Avenue",
+	"post-code":"AC2 10HB"
+}]
