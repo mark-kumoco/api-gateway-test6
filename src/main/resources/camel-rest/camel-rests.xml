@@ -6,7 +6,7 @@
         </get>
     </rest>
     <rest id="rest-4897d13e-f55d-4ddf-8211-92833cd207fc">
-        <get consumes="application/json" produces="application/json" uri="/api/obj1">
+        <get produces="application/json" uri="/api/obj1">
             <to uri="direct:obj1"/>
         </get>
     </rest>

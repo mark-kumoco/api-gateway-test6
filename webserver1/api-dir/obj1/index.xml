@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes'?>
+<root>
+   <element>
+      <age>30</age>
+      <car>Mini</car>
+      <name>Bob</name>
+   </element>
+   <element>
+      <age>35</age>
+      <car>Jaguar</car>
+      <name>Betty</name>
+   </element>
+</root>
