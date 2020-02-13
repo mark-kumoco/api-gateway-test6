@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "root": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "age": {
+              "type": "integer"
+            },
+            "car": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "age",
+            "car",
+            "name"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "age": {
+              "type": "integer"
+            },
+            "car": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "age",
+            "car",
+            "name"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "root"
+  ]
+}

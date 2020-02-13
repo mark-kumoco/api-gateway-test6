@@ -55,7 +55,18 @@
             <from id="_route4" uri="direct:obj3"/>
             <to id="_to4" uri="http://localhost:8081/obj3/index.html?bridgeEndpoint=true"/>
         </route>
-
+        <route errorHandlerRef="eh" id="api-route4-post">
+            <from id="_route4-post" uri="direct:obj3-post"/>
+            <!-- If you post this JSON with 'schema2.json', should be ok.
+{
+      "age": 48,
+      "car": "Fast",
+      "name": "Bob"
+}
+				if not, you will see something like "JSon validation error with 1 errors"
+			 -->
+            <to id="_to4-post" uri="json-validator:schema2.json" pattern="InOnly"/>
+        </route>
         <!-- 
             	TODO 
             	<redeliveryPolicy backOffMultiplier="5000"/> 

@@ -22,5 +22,8 @@
         <get uri="/api/obj3">
             <to uri="direct:obj3"/>
         </get>
+        <post uri="/api/obj3">
+            <to uri="direct:obj3-post"/>
+        </post>
     </rest>
 </rests>
