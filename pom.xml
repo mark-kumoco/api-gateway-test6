@@ -115,6 +115,20 @@
 	    <artifactId>xom</artifactId>
     	<version>1.3.4</version>
 	</dependency>
+	<dependency>
+	    <groupId>org.apache.activemq</groupId>
+	    <artifactId>activemq-camel</artifactId>
+	    <version>5.15.11</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.camel</groupId>
+	    <artifactId>camel-activemq</artifactId>
+	    <version>3.0.1</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.camel</groupId>
+	    <artifactId>camel-jms</artifactId>
+	</dependency>
   </dependencies>
   <repositories>
     <repository>

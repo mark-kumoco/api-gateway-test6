@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:camel="http://camel.apache.org/schema/spring"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+    	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+    	
+
+	 <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent" >
+        <property name="connectionFactory">
+	        <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+	            <property name="brokerURL" value="vm://localhost?broker.persistent=false"/>
+	            <property name="userName" value="admin"/>
+	            <property name="password" value="admin"/>
+	        </bean>
+        </property>
+    </bean>
+    <!-- bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
+
+    <broker useJmx="true" persistent="false" xmlns="http://activemq.org/config/1.0"
+            brokerName="localhost" dataDirectory="${activemq.base}/data">
+    </broker-->
+ 
     <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
         <errorHandler id="eh" redeliveryPolicyRef="apiPolicy"/>
-         <dataFormats> 
-         	<xmljson id="xml2json" forceTopLevelObject="true" skipWhitespace="false" trimSpaces="false" skipNamespaces="true" removeNamespacePrefixes="true" />
-         	<xmljson id="json2xml" rootName="MX"  expandableProperties="" elementName="" arrayName="" />
-         </dataFormats> 
+        <dataFormats>
+            <xmljson forceTopLevelObject="true" id="xml2json"
+                removeNamespacePrefixes="true" skipNamespaces="true"
+                skipWhitespace="false" trimSpaces="false"/>
+            <xmljson id="json2xml" rootName="MX"/>
+        </dataFormats>
         <redeliveryPolicyProfile id="apiPolicy" maximumRedeliveries="4"
             redeliveryDelay="4000" retryAttemptedLogLevel="WARN"/>
         <route errorHandlerRef="eh" id="api-route1">
@@ -17,16 +39,23 @@
         <route errorHandlerRef="eh" id="api-route2">
             <from id="_route2" uri="direct:obj1"/>
             <to id="_to2" uri="http://localhost:8081/obj1/index.xml?bridgeEndpoint=true"/>
-            <marshal ref="xml2json" />
+            <marshal id="_marshal1" ref="xml2json"/>
         </route>
         <route errorHandlerRef="eh" id="api-route3">
             <from id="_route3" uri="direct:obj2"/>
             <to id="_to3" uri="http://localhost:8081/obj2/index.json?bridgeEndpoint=true"/>
         </route>
+        <route errorHandlerRef="eh" id="api-route3-post">
+            <from id="_route3-post" uri="direct:obj2-post"/>
+            <!-- codeready indicates an error on the next line, but gives no explanation -->
+            <!-- also, messages in the 'topic' my_queue seem to go up, as opposed to the 'queue' -->
+            <to id="_to3-post" uri="activemq:my_queue" pattern="InOnly"/>
+        </route>
         <route errorHandlerRef="eh" id="api-route4">
             <from id="_route4" uri="direct:obj3"/>
             <to id="_to4" uri="http://localhost:8081/obj3/index.html?bridgeEndpoint=true"/>
         </route>
+
         <!-- 
             	TODO 
             	<redeliveryPolicy backOffMultiplier="5000"/> 
@@ -40,6 +69,8 @@
 	            <marshal id="_marshal1">
 	                <xmljson encoding="ISO-8859-1" forceTopLevelObject="true"/>
 	            </marshal>
+	            xmlns:context="http://www.springframework.org/schema/context"
         -->
     </camelContext>
+
 </beans>

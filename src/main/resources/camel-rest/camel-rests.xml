@@ -14,6 +14,9 @@
         <get uri="/api/obj2">
             <to uri="direct:obj2"/>
         </get>
+        <post uri="/api/obj2">
+            <to uri="direct:obj2-post"/>
+        </post>
     </rest>
     <rest id="rest-4666e67f-b545-4d10-b71d-5cc96e83435a">
         <get uri="/api/obj3">
