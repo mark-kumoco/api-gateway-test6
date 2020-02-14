@@ -26,4 +26,9 @@
             <to uri="direct:obj3-post"/>
         </post>
     </rest>
+    <rest id="r">
+        <get uri="/api/db">
+            <to uri="direct:db"/>
+        </get>
+    </rest>
 </rests>

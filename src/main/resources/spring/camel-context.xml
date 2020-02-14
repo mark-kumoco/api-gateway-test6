@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
-    	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
-    	
-
-	 <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent" >
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd        
+    	http://camel.apache.org/schema/spring
+    	http://camel.apache.org/schema/spring/camel-spring.xsd
+    	http://activemq.apache.org/schema/core
+    	http://activemq.apache.org/schema/core/activemq-core.xsd
+    	http://www.springframework.org/schema/jdbc 
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+    <bean class="org.apache.activemq.camel.component.ActiveMQComponent" id="activemq">
         <property name="connectionFactory">
-	        <bean class="org.apache.activemq.ActiveMQConnectionFactory">
-	            <property name="brokerURL" value="vm://localhost?broker.persistent=false"/>
-	            <property name="userName" value="admin"/>
-	            <property name="password" value="admin"/>
-	        </bean>
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="vm://localhost?broker.persistent=false"/>
+                <property name="userName" value="admin"/>
+                <property name="password" value="admin"/>
+            </bean>
         </property>
     </bean>
-    <!-- bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
-
-    <broker useJmx="true" persistent="false" xmlns="http://activemq.org/config/1.0"
-            brokerName="localhost" dataDirectory="${activemq.base}/data">
-    </broker-->
- 
+    <bean id="postgreData" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://localhost/test1" />
+		<property name="username" value="postgres" />
+		<!-- property name="password" value="rida" /-->
+	</bean>
+	<jdbc:initialize-database data-source="postgreData" enabled="true">
+		<jdbc:script location="classpath:db-select.sql" />
+	</jdbc:initialize-database>
+	<bean id="sqlComponent" class="org.apache.camel.component.sql.SqlComponent">
+		<property name="postgreData" ref="postgreData" />
+	</bean>
     <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
         <errorHandler id="eh" redeliveryPolicyRef="apiPolicy"/>
         <dataFormats>
@@ -49,7 +59,7 @@
             <from id="_route3-post" uri="direct:obj2-post"/>
             <!-- codeready indicates an error on the next line, but gives no explanation -->
             <!-- also, messages in the 'topic' my_queue seem to go up, as opposed to the 'queue' -->
-            <to id="_to3-post" uri="activemq:my_queue" pattern="InOnly"/>
+            <to id="_to3-post" pattern="InOnly" uri="activemq:my_queue"/>
         </route>
         <route errorHandlerRef="eh" id="api-route4">
             <from id="_route4" uri="direct:obj3"/>
@@ -65,7 +75,11 @@
 }
 				if not, you will see something like "JSon validation error with 1 errors"
 			 -->
-            <to id="_to4-post" uri="json-validator:schema2.json" pattern="InOnly"/>
+            <to id="_to4-post" pattern="InOnly" uri="json-validator:schema2.json"/>
+        </route>
+        <route errorHandlerRef="eh" id="api-routedb">
+            <from id="_routedb" uri="direct:db"/>
+            <to id="_todb" uri="jdbc:postgreData"/>
         </route>
         <!-- 
             	TODO 
@@ -83,5 +97,4 @@
 	            xmlns:context="http://www.springframework.org/schema/context"
         -->
     </camelContext>
-
 </beans>
