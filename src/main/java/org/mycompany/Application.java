@@ -22,11 +22,14 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 /**
  * A spring-boot application that includes a Camel route builder to setup the Camel routes
  */
 @SpringBootApplication
 @ImportResource({"classpath:spring/camel-context.xml"})
+@EnableSwagger2
 public class Application {
 
     /**
@@ -44,4 +47,3 @@ public class Application {
     }
 
 }
-

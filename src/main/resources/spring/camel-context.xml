@@ -2,15 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:camel="http://camel.apache.org/schema/spring"
     xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans 
-    	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd        
-    	http://camel.apache.org/schema/spring
-    	http://camel.apache.org/schema/spring/camel-spring.xsd
-    	http://activemq.apache.org/schema/core
-    	http://activemq.apache.org/schema/core/activemq-core.xsd
-    	http://www.springframework.org/schema/jdbc 
-        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd              http://camel.apache.org/schema/spring      http://camel.apache.org/schema/spring/camel-spring.xsd      http://activemq.apache.org/schema/core      http://activemq.apache.org/schema/core/activemq-core.xsd      http://www.springframework.org/schema/jdbc          http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
     <bean class="org.apache.activemq.camel.component.ActiveMQComponent" id="activemq">
         <property name="connectionFactory">
             <bean class="org.apache.activemq.ActiveMQConnectionFactory">
@@ -20,18 +12,19 @@
             </bean>
         </property>
     </bean>
-    <bean id="postgreData" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="org.postgresql.Driver" />
-		<property name="url" value="jdbc:postgresql://localhost/test1" />
-		<property name="username" value="postgres" />
-		<!-- property name="password" value="rida" /-->
-	</bean>
-	<jdbc:initialize-database data-source="postgreData" enabled="true">
-		<jdbc:script location="classpath:db-select.sql" />
-	</jdbc:initialize-database>
-	<bean id="sqlComponent" class="org.apache.camel.component.sql.SqlComponent">
-		<property name="postgreData" ref="postgreData" />
-	</bean>
+    <bean class="org.apache.commons.dbcp.BasicDataSource"
+        destroy-method="close" id="postgreData">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://localhost/test1"/>
+        <property name="username" value="postgres"/>
+        <!-- property name="password" value="rida" /-->
+    </bean>
+    <jdbc:initialize-database data-source="postgreData" enabled="true">
+        <jdbc:script location="classpath:db-select.sql"/>
+    </jdbc:initialize-database>
+    <!-- bean class="org.apache.camel.component.sql.SqlComponent" id="sqlComponent">
+        <property name="postgreData" ref="postgreData"/>
+    </bean-->
     <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
         <errorHandler id="eh" redeliveryPolicyRef="apiPolicy"/>
         <dataFormats>
@@ -42,6 +35,14 @@
         </dataFormats>
         <redeliveryPolicyProfile id="apiPolicy" maximumRedeliveries="4"
             redeliveryDelay="4000" retryAttemptedLogLevel="WARN"/>
+        <restConfiguration apiContextListing="true"
+            apiContextPath="api-docs" enableCORS="true" port="8080">
+            <apiProperty key="base.path" value="rest"/>
+            <apiProperty key="api.version" value="1.0.0"/>
+            <apiProperty key="api.title" value="Swagger Test"/>
+            <apiProperty key="api.description" value="Swagger Test Rest Example that provides an User REST service"/>
+            <apiProperty key="api.contact.name" value="The Apache Camel team"/>
+        </restConfiguration>
         <route errorHandlerRef="eh" id="api-route1">
             <from id="_route1" uri="direct:api"/>
             <to id="_to1" uri="http://localhost:8081/?bridgeEndpoint=true"/>
